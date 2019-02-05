@@ -1,0 +1,27 @@
+---
+
+- step:
+    name: train
+    image: python:3.6
+    command: python train.py {parameters}
+    parameters:
+    - name: agent
+      pass-as: --agent={v}
+      description: Which agent to use (DRUNKARD, ACCOUNTANT, GAMBLER)
+      type: string
+      default: DRUNKARD
+    - name: learning_rate
+      pass-as: --learning_rate={v}
+      description: Learning rate
+      type: float
+      default: 0.1
+    - name: discount
+      pass-as: --discount={v}
+      description: Discount for estimated future state Q value
+      type: float
+      default: 0.95
+    - name: iterations
+      pass-as: --iterations={v}
+      description: Iteration count
+      type: integer
+      default: 10000
