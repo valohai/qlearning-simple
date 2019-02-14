@@ -37,7 +37,7 @@ def main():
         agent.update(old_state, new_state, action, reward) # Let the agent update internals
 
         total_reward += reward # Keep score
-        if step % 250 == 0: # Print out metadata every 100th iteration
+        if step % 250 == 0: # Print out metadata every 250th iteration
             print(json.dumps({'step': step, 'total_reward': total_reward}))
 
         time.sleep(0.0001) # Avoid spamming stdout too fast!
