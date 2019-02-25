@@ -41,15 +41,17 @@ class DeepGambler:
         loss = tf.losses.mean_squared_error(self.target_output, self.model_output)
         # Optimizer adjusts weights to minimize loss, with the speed of learning_rate
         self.optimizer = tf.train.GradientDescentOptimizer(learning_rate=self.learning_rate).minimize(loss)
-        # Initializer to set weights to initial random values (Note: seed comment in __init__)
+        # Initializer to set weights to initial values
         self.initializer = tf.global_variables_initializer()
 
     # Ask model to estimate Q value for specific state (inference)
     def get_Q(self, state):
-        # Model input single state represented by array of 5 items (state one-hot)
-        # Model output is array of Q values for single state
+        # Model input: Single state represented by array of 5 items (state one-hot)
+        # Model output: Array of Q values for single state
         return self.session.run(self.model_output, feed_dict={self.model_input: self.to_one_hot(state)})[0]
 
+    # Turn state into 2d one-hot tensor
+    # Example: 3 -> [[0,0,0,1,0]]
     def to_one_hot(self, state):
         one_hot = np.zeros((1, 5))
         one_hot[0, [state]] = 1
@@ -70,10 +72,10 @@ class DeepGambler:
         return FORWARD if random.random() < 0.5 else BACKWARD
 
     def train(self, old_state, action, reward, new_state):
-        # Ask the model for the Q values of the old state
+        # Ask the model for the Q values of the old state (inference)
         old_state_Q_values = self.get_Q(old_state)
 
-        # Ask the model for the Q values of the new state
+        # Ask the model for the Q values of the new state (inference)
         new_state_Q_values = self.get_Q(new_state)
 
         # Real Q value for the action we took. This is what we will train towards.
