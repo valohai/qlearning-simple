@@ -7,7 +7,7 @@
     parameters:
     - name: agent
       pass-as: --agent={v}
-      description: Which agent to use (DRUNKARD, ACCOUNTANT, GAMBLER)
+      description: Which agent to use (DRUNKARD, ACCOUNTANT, GAMBLER, DEEPGAMBLER)
       type: string
       default: DRUNKARD
     - name: learning_rate
