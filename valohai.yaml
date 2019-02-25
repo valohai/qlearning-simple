@@ -2,7 +2,7 @@
 
 - step:
     name: train
-    image: python:3.6
+    image: tensorflow/tensorflow:1.8.0-devel
     command: python train.py {parameters}
     parameters:
     - name: agent
