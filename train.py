@@ -5,6 +5,7 @@ import time
 from drunkard import Drunkard
 from accountant import Accountant
 from gambler import Gambler
+from deep_gambler import DeepGambler
 from dungeon_simulator import DungeonSimulator
 
 def main():
@@ -21,6 +22,8 @@ def main():
         agent = Gambler(learning_rate=FLAGS.learning_rate, discount=FLAGS.discount, iterations=FLAGS.iterations)
     elif FLAGS.agent == 'ACCOUNTANT':
         agent = Accountant()
+    elif FLAGS.agent == 'DEEPGAMBLER':
+        agent = DeepGambler(learning_rate=FLAGS.learning_rate, discount=FLAGS.discount, iterations=FLAGS.iterations)
     else:
         agent = Drunkard()
 
@@ -28,6 +31,7 @@ def main():
     dungeon = DungeonSimulator()
     dungeon.reset()
     total_reward = 0 # Score keeping
+    last_total = 0
 
     # main loop
     for step in range(FLAGS.iterations):
@@ -38,11 +42,13 @@ def main():
 
         total_reward += reward # Keep score
         if step % 250 == 0: # Print out metadata every 250th iteration
-            print(json.dumps({'step': step, 'total_reward': total_reward}))
+            performance = (total_reward - last_total) / 250.0
+            print(json.dumps({'step': step, 'performance': performance, 'total_reward': total_reward}))
+            last_total = total_reward
 
         time.sleep(0.0001) # Avoid spamming stdout too fast!
 
-    print("Final Q-table", agent.q_table)
+    # print("Final Q-table", agent.q_table)
 
 if __name__ == "__main__":
     main()

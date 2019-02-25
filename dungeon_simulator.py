@@ -11,14 +11,11 @@ class DungeonSimulator:
 
     def take_action(self, action):
         if random.random() < self.slip:
-            # agent slipped, reverse action taken
-            action = not action
-        if action == BACKWARD:
-            # BACKWARD: go back to the beginning, get small reward
+            action = not action  # agent slipped, reverse action taken
+        if action == BACKWARD:  # BACKWARD: go back to the beginning, get small reward
             reward = self.small
             self.state = 0
-        elif action == FORWARD:
-            # FORWARD: go up along the dungeon
+        elif action == FORWARD:  # FORWARD: go up along the dungeon
             if self.state < self.length - 1:
                 self.state += 1
                 reward = 0
@@ -27,6 +24,5 @@ class DungeonSimulator:
         return self.state, reward
 
     def reset(self):
-        # Reset state to zero, the beginning of the dungeon
-        self.state = 0
+        self.state = 0  # Reset state to zero, the beginning of dungeon
         return self.state
