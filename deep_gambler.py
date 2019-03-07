@@ -33,7 +33,7 @@ class DeepGambler:
         # Output is two values, Q for both possible actions FORWARD and BACKWARD
         # Output is 2-dimensional, due to possibility of batched training data
         # NOTE: In this example we assume no batching.
-        self.model_output = tf.layers.dense(fc1, self.output_count)
+        self.model_output = tf.layers.dense(fc2, self.output_count)
 
         # This is for feeding training output (a.k.a ideal target values)
         self.target_output = tf.placeholder(shape=[None, self.output_count], dtype=tf.float32)
