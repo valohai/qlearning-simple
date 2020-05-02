@@ -12,8 +12,8 @@ def main():
     # parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--agent', type=str, default='GAMBLER', help='Which agent to use')
-    parser.add_argument('--learning_rate', type=float, default=0.1, help='How quickly the algorithm tries to learn')
-    parser.add_argument('--discount', type=float, default=0.95, help='Discount for estimated future action')
+    parser.add_argument('--learning_rate', type=float, default=0.5, help='How quickly the algorithm tries to learn')
+    parser.add_argument('--discount', type=float, default=0.98, help='Discount for estimated future action')
     parser.add_argument('--iterations', type=int, default=2000, help='Iteration count')
     ARGS, unparsed = parser.parse_known_args()
 
