@@ -3,15 +3,16 @@ import random
 import tensorflow as tf
 import numpy as np
 
+
 class DeepGambler:
-    def __init__(self, learning_rate=0.1, discount=0.95, exploration_rate=1.0, iterations=10000):
+    def __init__(self, learning_rate=0.5, discount=0.95, exploration_rate=1.0, iterations=10000):
         self.learning_rate = learning_rate
         self.discount = discount # How much we appreciate future reward over current
-        self.exploration_rate = 1.0 # Initial exploration rate
+        self.exploration_rate = exploration_rate # Initial exploration rate
         self.exploration_delta = 1.0 / iterations # Shift from exploration to explotation
 
-        # Input has five neurons, each represents single game state (0-4)
-        self.input_count = 5
+        # Input has single neuron representing single game state (0-4)
+        self.input_count = 1
         # Output is two neurons, each represents Q-value for action (FORWARD and BACKWARD)
         self.output_count = 2
 
@@ -21,14 +22,16 @@ class DeepGambler:
 
     # Define tensorflow model graph
     def define_model(self):
-        # Input is an array of 5 items (state one-hot)
+        # Input is an array of single item (state)
         # Input is 2-dimensional, due to possibility of batched training data
         # NOTE: In this example we assume no batching.
         self.model_input = tf.placeholder(dtype=tf.float32, shape=[None, self.input_count])
 
-        # Two hidden layers of 16 neurons with sigmoid activation initialized to zero for stability
-        fc1 = tf.layers.dense(self.model_input, 16, activation=tf.sigmoid, kernel_initializer=tf.constant_initializer(np.zeros((self.input_count, 16))))
-        fc2 = tf.layers.dense(fc1, 16, activation=tf.sigmoid, kernel_initializer=tf.constant_initializer(np.zeros((16, self.output_count))))
+        # 8 hidden neurons per layer
+        layer_size = 8
+        # Two hidden layers of 8 neurons with sigmoid activation initialized to zero for stability
+        fc1 = tf.layers.dense(self.model_input, layer_size, activation=tf.sigmoid, kernel_initializer=tf.constant_initializer(np.zeros((self.input_count, layer_size))))
+        fc2 = tf.layers.dense(fc1, layer_size, activation=tf.sigmoid, kernel_initializer=tf.constant_initializer(np.zeros((layer_size, self.output_count))))
 
         # Output is two values, Q for both possible actions FORWARD and BACKWARD
         # Output is 2-dimensional, due to possibility of batched training data
@@ -46,16 +49,9 @@ class DeepGambler:
 
     # Ask model to estimate Q value for specific state (inference)
     def get_Q(self, state):
-        # Model input: Single state represented by array of 5 items (state one-hot)
+        # Model input: Single state represented by array of single item (state)
         # Model output: Array of Q values for single state
-        return self.session.run(self.model_output, feed_dict={self.model_input: self.to_one_hot(state)})[0]
-
-    # Turn state into 2d one-hot tensor
-    # Example: 3 -> [[0,0,0,1,0]]
-    def to_one_hot(self, state):
-        one_hot = np.zeros((1, 5))
-        one_hot[0, [state]] = 1
-        return one_hot
+        return self.session.run(self.model_output, feed_dict={self.model_input: [[state]]})[0]
 
     def get_next_action(self, state):
         if random.random() > self.exploration_rate: # Explore (gamble) or exploit (greedy)
@@ -82,7 +78,8 @@ class DeepGambler:
         old_state_Q_values[action] = reward + self.discount * np.amax(new_state_Q_values)
         
         # Setup training data
-        training_input = self.to_one_hot(old_state)
+        training_input = [[old_state]]
+
         target_output = [old_state_Q_values]
         training_data = {self.model_input: training_input, self.target_output: target_output}
 

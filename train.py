@@ -15,15 +15,15 @@ def main():
     parser.add_argument('--learning_rate', type=float, default=0.1, help='How quickly the algorithm tries to learn')
     parser.add_argument('--discount', type=float, default=0.95, help='Discount for estimated future action')
     parser.add_argument('--iterations', type=int, default=2000, help='Iteration count')
-    FLAGS, unparsed = parser.parse_known_args()
+    ARGS, unparsed = parser.parse_known_args()
 
     # select agent
-    if FLAGS.agent == 'GAMBLER':
-        agent = Gambler(learning_rate=FLAGS.learning_rate, discount=FLAGS.discount, iterations=FLAGS.iterations)
-    elif FLAGS.agent == 'ACCOUNTANT':
+    if ARGS.agent == 'GAMBLER':
+        agent = Gambler(learning_rate=ARGS.learning_rate, discount=ARGS.discount, iterations=ARGS.iterations)
+    elif ARGS.agent == 'ACCOUNTANT':
         agent = Accountant()
-    elif FLAGS.agent == 'DEEPGAMBLER':
-        agent = DeepGambler(learning_rate=FLAGS.learning_rate, discount=FLAGS.discount, iterations=FLAGS.iterations)
+    elif ARGS.agent == 'DEEPGAMBLER':
+        agent = DeepGambler(learning_rate=ARGS.learning_rate, discount=ARGS.discount, iterations=ARGS.iterations)
     else:
         agent = Drunkard()
 
@@ -34,7 +34,7 @@ def main():
     last_total = 0
 
     # main loop
-    for step in range(FLAGS.iterations):
+    for step in range(ARGS.iterations):
         old_state = dungeon.state # Store current state
         action = agent.get_next_action(old_state) # Query agent for the next action
         new_state, reward = dungeon.take_action(action) # Take action, get new state and reward
